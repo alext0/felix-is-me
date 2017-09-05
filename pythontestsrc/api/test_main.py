@@ -30,73 +30,15 @@ from util.test_base import TestBase
 from util.factories import UserFty
 
 
-class ClusterResourceTestCase(TestBase):
+class InterouteTestCase(TestBase):
     """
-    Tests for the Cluster API.
+    Tests for the Interoute pages and API.
     """
 
-    def test_get_cluster(self):
-        section = SectionFty()
-        cdh = CdhFty(section_id=section)
-        user = UserFty(__sequence=1)
-        clustering = ClusteringFty(section=section)
-        task = TaskFty()
-        project = ProjectFty(
-            cdh=cdh,
-            clustering=clustering,
-            current_task=task,
-            section=section,
-            owner_user=user
-        )
-        cluster = ClusterFty(clustering=clustering)
-
-        self.session.commit()
-
-        expected_data = {
-            "items": [
-                {
-                    "clustering_id": cluster.clustering_id,
-                    "display_order": cluster.display_order,
-                    "id": cluster.id,
-                    "name": cluster.name
-                }
-            ]
-        }
-
-        self.verify_json_response(expected_data, '/api/projects/{}/clusters'.format(project.id))
-
-    def test_cluster_ordering(self):
-        section = SectionFty()
-        cdh = CdhFty(section=section)
-        user = UserFty(__sequence=1)
-        clustering = ClusteringFty(section=section)
-        task = TaskFty()
-        project = ProjectFty(
-            cdh_id=cdh.id,
-            clustering=clustering,
-            current_task=task,
-            section=section,
-            owner_user=user
-        )
-        clusters = [ClusterFty(clustering=clustering), ClusterFty(clustering=clustering)]
-
-        self.session.commit()
-
-        expected_data = {
-            "items": [
-                {
-                    "id": clusters[0].id,
-                    "name": clusters[0].name,
-                    "clustering_id": clusters[0].clustering_id,
-                    "display_order": clusters[0].display_order
-                },
-                {
-                    "id": clusters[1].id,
-                    "name": clusters[1].name,
-                    "clustering_id": clusters[1].clustering_id,
-                    "display_order": clusters[1].display_order
-                }
-            ]
-        }
-
-        self.verify_json_response(expected_data, '/api/projects/{}/clusters'.format(project.id))
+    def test_get_main_page(self):
+        with app.test_client() as client:
+            url = 'http://localhost:3000/main'
+            resp = client.get(url, **kwargs)
+            self.assertEqual(resp.status_code, 200)
+            response = resp.get_data(as_text=True)
+            self.assertRegex(response, '.*Login.*', 'Interoute heading not found')
