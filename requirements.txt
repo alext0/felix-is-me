@@ -20,7 +20,7 @@ Mako==1.0.7
 MarkupSafe==1.0
 marshmallow==2.13.6
 pbr==3.1.1
-py==1.4.34
+py==1.10.0
 pytest==3.2.1
 python-dateutil==2.6.1
 python-dotenv==0.6.5
